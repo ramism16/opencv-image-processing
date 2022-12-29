@@ -1,4 +1,6 @@
 """
+(CAPTURING BLUE COLOR OBJECTS FROM VIDEO)
+
 cv2.VideoCapture class used to read webcam input from computer
 and operations on this input to track and detect some object of choice
 
@@ -8,14 +10,14 @@ or (an integer for) opening (one of the) attached cameras for video capturing
 cv2.VideoCapture.get(propID) will return properties of the video if applicable
 propID is in the range [0,18]
 
-cap = cv2.VideoCapture(0), sometimes cap may have not initialized the capture
-in that case, check if not cap.isOpened() then cap.open()
+cap = cv2.VideoCapture(0), sometimes cap may not have initialized the capture
+in that case, check if cap.isOpened() is false then cap.open()
 
 cap.set(cap.get(4),240) will set the height in spatial resolution to 240
 
 as always, to show video loop cv2.imshow and use appropriate time with cv2.waitKey()
 if too less, video will be very fast, and if high, video will be slow
-25ms is average value for normal cases, this is the capturing response time
+25ms is average value for normal cases, this is the capturing response time from webcam input
 
 To save a video, we create and use a VideoWriter object, specify codec in FourCC
 """
@@ -100,7 +102,6 @@ while(True):
                          cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)), iterations = 3)
 
 
-        selectedContours = []
         #iterate through the contours to find the one with the larger area (i.e. remove noise in brighter areas)
         #and filter the contours with higher area to calculate their midpoint and output to terminal
         for c in contours:
@@ -113,14 +114,11 @@ while(True):
                 mid = boxMidpoint(box)
                 #display the midpoint
                 print("Contour midpoint: ", mid)
-                #add to selected contours, to draw bounding box around detected objects and filter noise
-                selectedContours.append(c)
-
-        #drawing the contours received from the mask
-        #drawContours(image, contours, -1(all contours)/n(color list), bounding box color(BGR), thickness)
-        #white bounding box, selected contours, and 3 pt thickness
-        cv2.drawContours(res, np.array(selectedContours), -1, (0,0,128), 3)
-        cv2.drawContours(frame, np.array(selectedContours), -1, (0,0,128), 3)
+                #drawing the contours received from the mask
+                #drawContours(image, contours, -1(all contours)/n(color list), bounding box color(BGR), thickness)
+                #white bounding box, selected contours, and 3 pt thickness
+                cv2.drawContours(res, c, -1, (0,0,128), 3)
+                cv2.drawContours(frame, c, -1, (0,0,128), 3)
         
         #displaying the stream output
         cv2.imshow('Camera',frame)
